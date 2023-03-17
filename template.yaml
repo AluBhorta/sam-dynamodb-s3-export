@@ -1,0 +1,47 @@
+# This is the SAM template that represents the architecture of your serverless application
+# https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/serverless-sam-template-basics.html
+
+AWSTemplateFormatVersion: 2010-09-09
+Description: >-
+  sam-ddb-s3-export
+
+Transform:
+- AWS::Serverless-2016-10-31
+
+Resources:  
+  Func1SeedDynamoDb:
+    Type: AWS::Serverless::Function
+    Properties:
+      Description: func1 - init ddb
+      Runtime: nodejs18.x
+      Architectures:
+        - x86_64
+      CodeUri: lambdas/func1-seed-ddb
+      Handler: app.handler
+      MemorySize: 128
+      Timeout: 100
+      Policies:
+      - AmazonDynamoDBFullAccess
+
+  DynamoDBTable:
+    Type: AWS::DynamoDB::Table
+    UpdateReplacePolicy: "Delete"
+    DeletionPolicy: "Delete"
+    Properties:
+      AttributeDefinitions:
+        - AttributeName: id
+          AttributeType: S
+      KeySchema:
+        - AttributeName: id
+          KeyType: HASH
+      ProvisionedThroughput:
+        ReadCapacityUnits: 1
+        WriteCapacityUnits: 1
+
+  InitializeDynamoDB:
+    Type: Custom::InitFunction
+    Properties:
+      ServiceToken:
+        Fn::GetAtt: [Func1SeedDynamoDb, "Arn"]
+      DynamoTableName:
+        Ref: DynamoDBTable

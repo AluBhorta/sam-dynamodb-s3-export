@@ -1,0 +1,17 @@
+{
+  "dependencies": {
+    "@aws-sdk/client-dynamodb": "^3.293.0",
+    "@aws-sdk/lib-dynamodb": "^3.293.0",
+    "cfn-response": "^1.0.1"
+  },
+  "name": "func1-seed-ddb",
+  "version": "1.0.0",
+  "main": "app.js",
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "description": ""
+}
