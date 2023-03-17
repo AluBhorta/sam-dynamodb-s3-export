@@ -11,23 +11,40 @@ Serverless app built on AWS SAM with Github CI/CD to demonstrate how to export D
 
 ### initialize
 
+fork this repo, clone it and `cd` into the directory:
+
+```sh
+git clone <your-forked-repo-url> sam-dynamodb-s3-export
+cd sam-dynamodb-s3-export
+```
+
+replace the default Github username (`AluBhorta`) with yours in the template parameter ie. replace `your-github-username` with your actual Github username or org where the repo is forked:
+
+```sh
+export YOUR_GITHUB_USER_OR_ORG=your-github-username
+sed -i '' -e "s|AluBhorta|$YOUR_GITHUB_USER_OR_ORG|g" template.yaml
+```
+
 build the app:
 
 ```sh
 sam build
 ```
 
-deploy the app (substitute `$YOUR_GITHUB_USER_OR_ORG` with your Github username or org):
+deploy the app:
 
 ```sh
-sam deploy \
-  --parameter-overrides ParameterKey=GitHubOrg,ParameterValue=$YOUR_GITHUB_USER_OR_ORG
+sam deploy
 ```
+
+deploy could take a few minutes after you confirm the changeset. feel free to sip your favourite beverage in the meantine... ☕️
+
+after deployment completes:
 
 - copy the `IAMRoleForPipeline` ARN's **Value** outputted by the cloudformation stack
 - then add it as a secret named `PIPELINE_IAM_ROLE` to your github repo. this role will be used by Github Actions for CI/CD and to interact with AWS on your behalf.
 
-NOTE: consider changing the default parameters of [template.yaml](./template.yaml) for ease of use, so that you don't have to specify `--parameter-overrides` everytime you deploy from your local machine.
+and well done! your sam app with CI/CD is up and running! 🔥
 
 ### make changes
 
