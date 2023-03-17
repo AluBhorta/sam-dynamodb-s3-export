@@ -8,8 +8,10 @@ Transform:
 Parameters:
   GitHubOrg:
     Type: String
+    Default: AluBhorta
   GitHubRepoName:
     Type: String
+    Default: sam-dynamodb-s3-export
 
 Resources:
   DynamoDBTable:
@@ -49,7 +51,7 @@ Resources:
         CloudWatchEvent:
           Type: Schedule
           Properties:
-            Schedule: cron(0 * * * ? *)
+            Schedule: cron(0 1 * * ? *)
       Policies:
         - AmazonDynamoDBFullAccess
 
