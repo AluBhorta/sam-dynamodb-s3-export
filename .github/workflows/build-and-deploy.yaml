@@ -1,4 +1,4 @@
-name: Simple CI/CD Pipeline
+name: Simple CI/CD pipeline to build and deploy a AWS SAM app
 
 on:
   push:
@@ -7,8 +7,11 @@ on:
 
 env:
   AWS_REGION: ap-south-1
-  PIPELINE_USER_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-  PIPELINE_USER_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+  PIPELINE_IAM_ROLE: ${{ vars.PIPELINE_IAM_ROLE }}
+
+permissions:
+  id-token: write
+  contents: read
 
 jobs:
   build-and-deploy:
@@ -27,13 +30,13 @@ jobs:
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v1-node16
         with:
-          aws-access-key-id: ${{ env.PIPELINE_USER_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ env.PIPELINE_USER_SECRET_ACCESS_KEY }}
+          role-to-assume: ${{ env.PIPELINE_IAM_ROLE }}
           aws-region: ${{ env.AWS_REGION }}
+          mask-aws-account-id: true
 
       - name: Deploy
         run: |
           sam deploy \
+            --parameter-overrides ParameterKey=GitHubOrg,ParameterValue=AluBhorta ParameterKey=GitHubRepoName,ParameterValue=sam-dynamodb-s3-export \
             --no-confirm-changeset \
             --no-fail-on-empty-changeset
-
