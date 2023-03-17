@@ -21,8 +21,6 @@ lint = true
 capabilities = "CAPABILITY_IAM"
 confirm_changeset = true
 resolve_s3 = true
-s3_bucket = "aws-sam-cli-managed-default-samclisourcebucket-i0aau4wh4gcc"
-s3_prefix = "sam-dynamodb-s3-export-v3"
 region = "ap-south-1"
 image_repositories = []
 

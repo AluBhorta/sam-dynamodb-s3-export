@@ -1,9 +1,6 @@
-# This is the SAM template that represents the architecture of your serverless application
-# https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/serverless-sam-template-basics.html
-
 AWSTemplateFormatVersion: 2010-09-09
 Description: >-
-  sam-dynamodb-s3-export
+  Stack used to demonstrate how to export dynamodb table data on a schedule 
 
 Transform:
   - AWS::Serverless-2016-10-31
@@ -24,37 +21,38 @@ Resources:
         ReadCapacityUnits: 1
         WriteCapacityUnits: 1
 
-  # Func1SeedDynamoDb:
-  #   Type: AWS::Serverless::Function
-  #   Properties:
-  #     Description: func1 - init ddb
-  #     Runtime: nodejs18.x
-  #     Architectures:
-  #       - x86_64
-  #     CodeUri: lambdas/func1-seed-ddb
-  #     Handler: app.handler
-  #     MemorySize: 128
-  #     Timeout: 120
-  #     Policies:
-  #     - AmazonDynamoDBFullAccess
-
-  # InitializeDynamoDB:
-  #   Type: Custom::InitFunction
-  #   Properties:
-  #     ServiceToken:
-  #       Fn::GetAtt: [Func1SeedDynamoDb, "Arn"]
-  #     DynamoTableName:
-  #       Ref: DynamoDBTable
-
   S3Bucket:
     Type: "AWS::S3::Bucket"
     DeletionPolicy: Delete
 
-  ScheduledTableExporter:
+  Func1ScheduledDataGenerator:
     Type: AWS::Serverless::Function
     Properties:
+      Description: "Inserts mock data to dynamodb table at scheduled intervals"
       Runtime: nodejs18.x
-      CodeUri: lambdas/func2-scheduled-exporter
+      Architectures:
+        - x86_64
+      CodeUri: lambdas/func1-data-generator
+      Handler: app.handler
+      MemorySize: 128
+      Timeout: 120
+      Environment:
+        Variables:
+          DYNAMODB_TABLE: !Ref DynamoDBTable
+      Events:
+        CloudWatchEvent:
+          Type: Schedule
+          Properties:
+            Schedule: cron(*/5 * * * ? *)
+      Policies:
+        - AmazonDynamoDBFullAccess
+
+  Func2ScheduledTableExporter:
+    Type: AWS::Serverless::Function
+    Properties:
+      Description: "Exports data from dyanmodb table to s3 bucket at scheduled intervals"
+      Runtime: nodejs18.x
+      CodeUri: lambdas/func2-data-exporter
       Handler: app.handler
       MemorySize: 128
       Timeout: 120

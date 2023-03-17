@@ -13,6 +13,7 @@ export const handler = async (event, context) => {
         `failed to get the following env vars: S3_BUCKET, DYNAMODB_TABLE`
       );
     }
+
     const data = await getTableData(tableName);
     await uploadJsonToS3(bucketName, data);
   } catch (error) {
