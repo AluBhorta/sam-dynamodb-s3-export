@@ -9,9 +9,11 @@ Parameters:
   GitHubOrg:
     Type: String
     Default: AluBhorta
+    Description: "Name of the Github user/org. You need to update this."
   GitHubRepoName:
     Type: String
     Default: sam-dynamodb-s3-export
+    Description: "Name of the Github repo."
 
 Resources:
   DynamoDBTable:
@@ -51,7 +53,7 @@ Resources:
         CloudWatchEvent:
           Type: Schedule
           Properties:
-            Schedule: cron(0 1 * * ? *)
+            Schedule: cron(0 * * * ? *)
       Policies:
         - AmazonDynamoDBFullAccess
 
@@ -104,5 +106,9 @@ Resources:
         - 6938fd4d98bab03faadb97b34396831e3780aea1
 
 Outputs:
+  ExportedDataS3Bucket:
+    Value: !Ref S3Bucket
+    Description: "The S3 bucket used to store exported data from DynamoDB."
   IAMRoleForPipeline:
     Value: !GetAtt [IAMRoleForPipeline, Arn]
+    Description: "The ARN of the IAM Role that will be used by Github Actions for CI/CD. Copy it, and add it as a secret named 'PIPELINE_IAM_ROLE' to your Github repo."

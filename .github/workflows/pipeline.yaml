@@ -7,7 +7,7 @@ on:
 
 env:
   AWS_REGION: ap-south-1
-  PIPELINE_IAM_ROLE: ${{ vars.PIPELINE_IAM_ROLE }}
+  PIPELINE_IAM_ROLE: ${{ secrets.PIPELINE_IAM_ROLE }}
 
 permissions:
   id-token: write
