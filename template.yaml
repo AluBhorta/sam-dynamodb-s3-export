@@ -49,7 +49,7 @@ Resources:
         CloudWatchEvent:
           Type: Schedule
           Properties:
-            Schedule: cron(*/10 * * * ? *)
+            Schedule: cron(0 * * * ? *)
       Policies:
         - AmazonDynamoDBFullAccess
 
@@ -70,7 +70,7 @@ Resources:
         CloudWatchEvent:
           Type: Schedule
           Properties:
-            Schedule: cron(*/10 * * * ? *)
+            Schedule: cron(0 2 * * ? *)
       Policies:
         - AmazonDynamoDBFullAccess
         - AmazonS3FullAccess
