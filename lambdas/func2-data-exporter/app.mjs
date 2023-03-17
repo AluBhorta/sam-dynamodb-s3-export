@@ -32,7 +32,7 @@ async function getTableData(tableName) {
   return JSON.stringify(response.Items);
 }
 
-async function uploadJsonToS3(bucketName, data) {
+const uploadJsonToS3 = async (bucketName, data) => {
   const input = {
     Body: data,
     Bucket: bucketName,
@@ -43,4 +43,4 @@ async function uploadJsonToS3(bucketName, data) {
   const command = new PutObjectCommand(input);
   const response = await client.send(command);
   console.log("PutObjectCommandOutput", response);
-}
+};

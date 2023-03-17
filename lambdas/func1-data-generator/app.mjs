@@ -8,19 +8,17 @@ export const handler = async (event, context) => {
 
     const tableName = process.env.DYNAMODB_TABLE;
     if (!tableName) {
-      throw Error(
-        `failed to get the following env vars: DYNAMODB_TABLE`
-      );
+      throw Error(`failed to get the following env vars: DYNAMODB_TABLE`);
     }
 
     await insertMockDataToTable(tableName);
   } catch (error) {
     console.log("error", error);
-    throw error
+    throw error;
   }
 };
 
-async function insertMockDataToTable(tableName) {
+const insertMockDataToTable = async (tableName) => {
   const input = {
     Item: {
       id: { S: uuidv4() },
@@ -34,4 +32,4 @@ async function insertMockDataToTable(tableName) {
   const command = new PutItemCommand(input);
   const response = await client.send(command);
   console.log("PutItemCommandOutput", response);
-}
+};

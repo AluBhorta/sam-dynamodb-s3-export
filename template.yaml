@@ -1,6 +1,6 @@
 AWSTemplateFormatVersion: 2010-09-09
 Description: >-
-  Stack used to demonstrate how to export dynamodb table data on a schedule 
+  Stack used to demonstrate how to export dynamodb table data to s3 on a schedule 
 
 Transform:
   - AWS::Serverless-2016-10-31
@@ -43,7 +43,7 @@ Resources:
         CloudWatchEvent:
           Type: Schedule
           Properties:
-            Schedule: cron(*/5 * * * ? *)
+            Schedule: cron(*/10 * * * ? *)
       Policies:
         - AmazonDynamoDBFullAccess
 
