@@ -1,4 +1,4 @@
-name: Simple CI/CD pipeline to build and deploy a AWS SAM app
+name: Simple CI/CD pipeline to build and deploy an AWS SAM app
 
 on:
   push:

@@ -9,7 +9,7 @@ Parameters:
   GitHubOrg:
     Type: String
     Default: AluBhorta
-    Description: "Name of the Github user/org. You need to update this."
+    Description: "Name of the Github user/org."
   GitHubRepoName:
     Type: String
     Default: sam-dynamodb-s3-export
