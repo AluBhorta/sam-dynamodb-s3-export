@@ -3,26 +3,12 @@
 
 AWSTemplateFormatVersion: 2010-09-09
 Description: >-
-  sam-ddb-s3-export
+  sam-dynamodb-s3-export
 
 Transform:
-- AWS::Serverless-2016-10-31
+  - AWS::Serverless-2016-10-31
 
-Resources:  
-  Func1SeedDynamoDb:
-    Type: AWS::Serverless::Function
-    Properties:
-      Description: func1 - init ddb
-      Runtime: nodejs18.x
-      Architectures:
-        - x86_64
-      CodeUri: lambdas/func1-seed-ddb
-      Handler: app.handler
-      MemorySize: 128
-      Timeout: 100
-      Policies:
-      - AmazonDynamoDBFullAccess
-
+Resources:
   DynamoDBTable:
     Type: AWS::DynamoDB::Table
     UpdateReplacePolicy: "Delete"
@@ -38,10 +24,49 @@ Resources:
         ReadCapacityUnits: 1
         WriteCapacityUnits: 1
 
-  InitializeDynamoDB:
-    Type: Custom::InitFunction
+  # Func1SeedDynamoDb:
+  #   Type: AWS::Serverless::Function
+  #   Properties:
+  #     Description: func1 - init ddb
+  #     Runtime: nodejs18.x
+  #     Architectures:
+  #       - x86_64
+  #     CodeUri: lambdas/func1-seed-ddb
+  #     Handler: app.handler
+  #     MemorySize: 128
+  #     Timeout: 120
+  #     Policies:
+  #     - AmazonDynamoDBFullAccess
+
+  # InitializeDynamoDB:
+  #   Type: Custom::InitFunction
+  #   Properties:
+  #     ServiceToken:
+  #       Fn::GetAtt: [Func1SeedDynamoDb, "Arn"]
+  #     DynamoTableName:
+  #       Ref: DynamoDBTable
+
+  S3Bucket:
+    Type: "AWS::S3::Bucket"
+    DeletionPolicy: Delete
+
+  ScheduledTableExporter:
+    Type: AWS::Serverless::Function
     Properties:
-      ServiceToken:
-        Fn::GetAtt: [Func1SeedDynamoDb, "Arn"]
-      DynamoTableName:
-        Ref: DynamoDBTable
+      Runtime: nodejs18.x
+      CodeUri: lambdas/func2-scheduled-exporter
+      Handler: app.handler
+      MemorySize: 128
+      Timeout: 120
+      Environment:
+        Variables:
+          S3_BUCKET: !Ref S3Bucket
+          DYNAMODB_TABLE: !Ref DynamoDBTable
+      Events:
+        CloudWatchEvent:
+          Type: Schedule
+          Properties:
+            Schedule: cron(*/10 * * * ? *)
+      Policies:
+        - AmazonDynamoDBFullAccess
+        - AmazonS3FullAccess
