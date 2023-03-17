@@ -37,6 +37,6 @@ jobs:
       - name: Deploy
         run: |
           sam deploy \
-            --parameter-overrides ParameterKey=GitHubOrg,ParameterValue=AluBhorta ParameterKey=GitHubRepoName,ParameterValue=sam-dynamodb-s3-export \
+            --parameter-overrides ParameterKey=GitHubOrg,ParameterValue=$GITHUB_REPOSITORY_OWNER ParameterKey=GitHubRepoName,ParameterValue=${GITHUB_REPOSITORY#*/} \
             --no-confirm-changeset \
             --no-fail-on-empty-changeset
